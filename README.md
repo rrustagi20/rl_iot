@@ -35,6 +35,11 @@ There are 2 agents implemented in the module
 1. PPO (Proximal Policy Optimisation) Algorithm
 2. DDPG (Deep Deterministic Policy Gradient) Algorithm
 
+Source the virtual environment first (venv)
+```bash
+$ cd rl_iot
+$ source .env/bin/activate
+```
 To train the PPO algorithm:
 ```bash
 $ python3 ppo_main.py
