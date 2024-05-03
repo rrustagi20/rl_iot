@@ -41,12 +41,17 @@ $ cd rl_iot
 $ source .env/bin/activate
 ```
 To train the PPO algorithm:
+2 arguments can be passed while running the agent.
+1. --logname (to save model training logs)
+2. --model (to save model name)
+Otherwise there are default values as well. No need to pass external arguments. But make sure that file names do not overwrite.
+
 ```bash
-$ python3 ppo_main.py
+$ python3 ppo_main.py --logname=PPO_TEST1 --model=1
 ```
 To train the DDPG algorithm:
 ```bash
-$ python3 ddpg_main.py
+$ python3 ddpg_main.py --logname=DDPG_TEST1 --model=1
 ```
 ### 2 Methods are used in this project
 a. Above mentioned paper MDP approach: Coupled Reward Optimisation Problem
@@ -60,13 +65,18 @@ The below command is run parallely in another terminal while the agent is traini
 After running this command, a localhost would be output by the command. 
 Click on the link and refresh as the model trains to visualise the different metrics for training.
 
+### To visualise already present model logs
 ```bash
-$ tensorboard --logdir=ppo_coupled_approach_reward  # Visualing Paper Implementation Results on PPO Algorithm
-$ tensorboard --logdir=ddpg_coupled_approach_reward  # Visualing Paper Implementation Results on DDPG Algorithm
+$ tensorboard --logdir=ppo_coupled_approach_reward  # Visualing Paper Implementation Results on Already Trained PPO Algorithm
+$ tensorboard --logdir=ddpg_coupled_approach_reward  # Visualing Paper Implementation Results on Already Trained DDPG Algorithm
 
-$ tensorboard --logdir=ppo_decoupled_approach_reward  # Visualing Novel Approach Results on PPO Algorithm
+$ tensorboard --logdir=ppo_decoupled_approach_reward  # Visualing Novel Approach Results on Already Trained PPO Algorithm
 ```
-
+### To visualise current trained model logs
+```bash
+$ tensorboard --logdir=${LOG_NAME}  # Visualing Model Training Logs on Trained Algorithm
+# Here replace ${LOG_NAME} with the actual value passed in --logname argument
+```
 ### Contact:
 1. Rahul Rustagi (rustagirahul24@gmail.com)
 2. Chinmay Joshi
