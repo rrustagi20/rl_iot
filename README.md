@@ -17,6 +17,18 @@ python3 -m venv .env
 source .env/bin/activate
 pip3 install -e .
 ```
+
+### Possible Installation Errors:
+```bash
+  Failed building wheel for grpcio
+  Running setup.py clean for grpcio
+Failed to build grpcio
+```
+Then Run:
+```bash
+pip3 install tensorboard==2.10.0
+```
+Similarly if any package is not build on your system, please try and install it separately like above, using the version number provided in `setup.py` file
 ### Executing the RL Code:
 
 There are 2 agents implemented in the module
