@@ -1,47 +1,44 @@
 import gym
 import torch
-# from agent import TRPOAgent
 import simple_driving
 import time
 from stable_baselines3 import PPO
+from stable_baselines3.common.evaluation import evaluate_policy
+import argparse
 
 def main():
-    # nn = torch.nn.Sequential(torch.nn.Linear(8, 64), torch.nn.Tanh(),torch.nn.Linear(64, 2))
-    # agent = TRPOAgent(policy=nn)
-    # agent.load_model("agent.pth")
-    # agent.train("SimpleDriving-v0", seed=0, batch_size=5000, iterations=10, max_episode_length=250, verbose=True)
-    # agent.save_model("agent.pth")
 
     env = gym.make('HardDriving-v0')
 
-    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log="./ppo_test/")
+    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=f"./{args.logname}/")
     
     TIME_STEPS = 100_000
-    # for i in range(10):
-    i=1
-    model.learn(total_timesteps=TIME_STEPS,reset_num_timesteps=False, tb_log_name=f"ppo_{i*TIME_STEPS}")
-    model.save(f"ppo_{i*TIME_STEPS}")
-    # model.learn(total_timesteps=100_000)
 
-    # vec_env = model.get_env()
-    # obs = vec_env.reset()
-    # for i in range(1000):
-    #     action, _states = model.predict(obs, deterministic=True)
-    #     obs, reward, done, info = vec_env.step(action)
-    #     vec_env.render()
-        # VecEnv resets automatically
-        # if done:
-        #   obs = vec_env.reset()
+    model.learn(total_timesteps=TIME_STEPS,reset_num_timesteps=False, tb_log_name=f"ppo_{TIME_STEPS}")
+    model.save(f"ppo_{args.model}")
+    del model  # delete trained model to demonstrate loading
 
+    # Load the trained agent
+    model = PPO.load(f"ppo_{args.model}", env=env, print_system_info=True)
 
-    # ob = env.reset()
-    # while True:
-    #     action = agent(ob)
-    #     ob, _, done, _ = env.step(action)
-    #     env.render()
-    #     if done:
-    #         ob = env.reset()
-    #         time.sleep(1/30)
+    # Evaluate the agent
+    mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
+    print(f"mean_reward:{mean_reward:.2f} +/- {std_reward:.2f}")
 
+    # Enjoy trained agent
+    vec_env = model.get_env()
+    obs = vec_env.reset()
+    for i in range(1000):
+        action, _states = model.predict(obs, deterministic=True)
+        obs, rewards, dones, info = vec_env.step(action)
+        # print(f"Step: {i} Action: {action} Reward: {rewards} Done: {dones}")
+        vec_env.render("human")
+
+    
 if __name__ == '__main__':
+    # Parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--logname", default="ppo_test")    
+    parser.add_argument("--model", default="test1")            
+    args = parser.parse_args()
     main()
